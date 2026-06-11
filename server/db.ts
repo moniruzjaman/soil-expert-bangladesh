@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, aezSoilProfiles, fields, soilTests, fertilizerRecommendations, activityRecords, chatMessages } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,126 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * AEZ Soil Profile queries
+ */
+export async function getAezSoilProfileByCode(aezCode: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select().from(aezSoilProfiles).where(eq(aezSoilProfiles.aezCode, aezCode)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getAllAezSoilProfiles() {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(aezSoilProfiles);
+}
+
+/**
+ * Field queries
+ */
+export async function getUserFields(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(fields).where(eq(fields.userId, userId));
+}
+
+export async function getFieldById(fieldId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select().from(fields).where(eq(fields.id, fieldId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createField(fieldData: typeof fields.$inferInsert) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(fields).values(fieldData);
+  return result;
+}
+
+/**
+ * Soil Test queries
+ */
+export async function getFieldSoilTests(fieldId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(soilTests).where(eq(soilTests.fieldId, fieldId));
+}
+
+export async function getLatestSoilTest(fieldId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select().from(soilTests).where(eq(soilTests.fieldId, fieldId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createSoilTest(testData: typeof soilTests.$inferInsert) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db.insert(soilTests).values(testData);
+}
+
+/**
+ * Fertilizer Recommendation queries
+ */
+export async function getFieldFertilizerRecommendations(fieldId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(fertilizerRecommendations).where(eq(fertilizerRecommendations.fieldId, fieldId));
+}
+
+export async function createFertilizerRecommendation(recData: typeof fertilizerRecommendations.$inferInsert) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db.insert(fertilizerRecommendations).values(recData);
+}
+
+/**
+ * Activity Record queries
+ */
+export async function getFieldActivityRecords(fieldId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(activityRecords).where(eq(activityRecords.fieldId, fieldId));
+}
+
+export async function createActivityRecord(recordData: typeof activityRecords.$inferInsert) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db.insert(activityRecords).values(recordData);
+}
+
+/**
+ * Chat Message queries
+ */
+export async function getUserChatMessages(userId: number, fieldId?: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  if (fieldId) {
+    return await db.select().from(chatMessages).where(and(eq(chatMessages.userId, userId), eq(chatMessages.fieldId, fieldId)));
+  }
+
+  return await db.select().from(chatMessages).where(eq(chatMessages.userId, userId));
+}
+
+export async function createChatMessage(messageData: typeof chatMessages.$inferInsert) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db.insert(chatMessages).values(messageData);
+}

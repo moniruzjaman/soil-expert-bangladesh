@@ -5,12 +5,28 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import Fields from "./pages/Fields";
+import SoilAssessment from "./pages/SoilAssessment";
+import Fertilizer from "./pages/Fertilizer";
+import Irrigation from "./pages/Irrigation";
+import Chat from "./pages/Chat";
+import Crops from "./pages/Crops";
+import Knowledge from "./pages/Knowledge";
+import Records from "./pages/Records";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/fields"} component={Fields} />
+      <Route path={"/soil-assessment"} component={SoilAssessment} />
+      <Route path={"/fertilizer"} component={Fertilizer} />
+      <Route path={"/irrigation"} component={Irrigation} />
+      <Route path={"/chat"} component={Chat} />
+      <Route path={"/crops"} component={Crops} />
+      <Route path={"/knowledge"} component={Knowledge} />
+      <Route path={"/records"} component={Records} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
