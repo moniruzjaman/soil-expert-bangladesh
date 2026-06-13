@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
-import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar } from "lucide-react";
+import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -289,12 +289,38 @@ export default function Home() {
           <Link href="/records">
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Calendar className="w-8 h-8 text-cyan-600 mb-2" />
+                <CalendarIcon className="w-8 h-8 text-cyan-600 mb-2" />
                 <CardTitle>Record Keeping</CardTitle>
                 <CardDescription>Track activities</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">Log soil tests, fertilizer, irrigation, and crop activities.</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/soil-test">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <TestTube className="w-8 h-8 text-orange-600 mb-2" />
+                <CardTitle>Soil Tests</CardTitle>
+                <CardDescription>Lab results</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">Record and track soil test results with detailed parameters.</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/calendar">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CalendarIcon className="w-8 h-8 text-teal-600 mb-2" />
+                <CardTitle>Seasonal Calendar</CardTitle>
+                <CardDescription>Crop calendar</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">View Bangladesh agricultural calendar with seasonal crop recommendations.</p>
               </CardContent>
             </Card>
           </Link>

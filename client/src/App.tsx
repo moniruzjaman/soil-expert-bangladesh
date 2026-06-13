@@ -13,6 +13,8 @@ import Chat from "./pages/Chat";
 import Crops from "./pages/Crops";
 import Knowledge from "./pages/Knowledge";
 import Records from "./pages/Records";
+import SoilTest from "./pages/SoilTest";
+import Calendar from "./pages/Calendar";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -27,6 +29,8 @@ function Router() {
       <Route path={"/crops"} component={Crops} />
       <Route path={"/knowledge"} component={Knowledge} />
       <Route path={"/records"} component={Records} />
+      <Route path={"/soil-test"} component={SoilTest} />
+      <Route path={"/calendar"} component={Calendar} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
