@@ -100,7 +100,7 @@
 - [x] Build irrigation event logger
 - [x] Add crop activity/event logging
 - [x] Create input cost tracking
-- [ ] Implement yield tracking
+- [x] Implement yield tracking
 - [ ] Build seasonal record summary
 - [ ] Add export/report generation for records
 - [ ] Create efficiency analysis dashboard

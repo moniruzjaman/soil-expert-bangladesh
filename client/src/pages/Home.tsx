@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
-import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube } from "lucide-react";
+import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -321,6 +321,19 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">View Bangladesh agricultural calendar with seasonal crop recommendations.</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/yield">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <TrendingUp className="w-8 h-8 text-purple-600 mb-2" />
+                <CardTitle>Yield Tracking</CardTitle>
+                <CardDescription>Harvest records</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">Record harvest data and monitor productivity trends over time.</p>
               </CardContent>
             </Card>
           </Link>
