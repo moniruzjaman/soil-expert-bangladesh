@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
-import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube, TrendingUp, Download } from "lucide-react";
+import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube, TrendingUp, Download, Zap } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -347,6 +347,19 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">Export field reports, activity records, and yield data as CSV/JSON.</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/efficiency">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Zap className="w-8 h-8 text-yellow-600 mb-2" />
+                <CardTitle>Efficiency Analysis</CardTitle>
+                <CardDescription>Cost & productivity</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">Track input costs, yields, and profitability metrics to optimize farm operations.</p>
               </CardContent>
             </Card>
           </Link>

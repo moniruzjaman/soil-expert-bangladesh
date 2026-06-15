@@ -18,6 +18,8 @@ import Calendar from "./pages/Calendar";
 import Yield from "./pages/Yield";
 import Export from "./pages/Export";
 import PrintReport from "./pages/PrintReport";
+import Efficiency from "./pages/Efficiency";
+import About from "./pages/About";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -37,6 +39,8 @@ function Router() {
       <Route path={"/yield"} component={Yield} />
       <Route path={"/export"} component={Export} />
       <Route path={"/print-report"} component={PrintReport} />
+      <Route path={"/efficiency"} component={Efficiency} />
+      <Route path={"/about"} component={About} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
