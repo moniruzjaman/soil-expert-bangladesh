@@ -101,8 +101,8 @@
 - [x] Add crop activity/event logging
 - [x] Create input cost tracking
 - [x] Implement yield tracking
-- [ ] Build seasonal record summary
-- [ ] Add export/report generation for records
+- [x] Build seasonal record summary
+- [x] Add export/report generation for records
 - [ ] Create efficiency analysis dashboard
 
 ## Phase 10: Dashboard & Seasonal Calendar
@@ -129,7 +129,7 @@
 - [ ] Create print-friendly report layouts
 
 ## Phase 12: Testing & Quality Assurance
-- [x] Write unit tests for recommendation engines (40 tests passing)
+- [x] Write unit tests for recommendation engines (46 tests passing)
 - [x] Test AEZ detection accuracy
 - [x] Verify fertilizer calculations
 - [x] Test crop suitability logic

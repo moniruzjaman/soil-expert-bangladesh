@@ -1,92 +1,149 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "./_core/trpc";
+import { createYield, getFieldYields, getYieldAnalytics, getUserYields, getSeasonalYieldSummary } from "./yield-db";
 
 export const yieldRouter = router({
-  // Get yield records for a field
+  /**
+   * Get all yield records for a specific field
+   */
   getFieldYields: protectedProcedure
     .input(z.object({ fieldId: z.number() }))
-    .query(async ({ input }) => {
-      // This would query from a yields table if it existed
-      // For now, return sample data structure
-      return [
-        {
-          id: 1,
-          fieldId: input.fieldId,
-          cropName: "Rice",
-          harvestDate: new Date("2025-10-15"),
-          quantityProduced: 5.5,
-          unit: "ton/ha",
-          expectedYield: 5.0,
-          yieldPercentage: 110,
-          notes: "Good yield due to proper fertilizer application",
-        },
-      ];
+    .query(async ({ ctx, input }) => {
+      try {
+        const records = await getFieldYields(input.fieldId);
+        return records.map((r) => ({
+          id: r.id,
+          fieldId: r.fieldId,
+          cropName: r.cropName,
+          harvestDate: r.harvestDate,
+          quantityProduced: parseFloat(r.quantityProduced),
+          unit: r.unit,
+          expectedYield: r.expectedYield ? parseFloat(r.expectedYield) : undefined,
+          yieldPercentage: r.yieldPercentage ? parseFloat(r.yieldPercentage) : undefined,
+          notes: r.notes,
+          season: r.season,
+        }));
+      } catch (error) {
+        console.error("Error fetching field yields:", error);
+        return [];
+      }
     }),
 
-  // Create yield record
+  /**
+   * Record a new harvest/yield
+   */
   recordYield: protectedProcedure
-    .input(z.object({
-      fieldId: z.number(),
-      cropName: z.string(),
-      harvestDate: z.date(),
-      quantityProduced: z.number(),
-      unit: z.string(),
-      expectedYield: z.number().optional(),
-      notes: z.string().optional(),
-    }))
+    .input(
+      z.object({
+        fieldId: z.number(),
+        cropName: z.string(),
+        harvestDate: z.date(),
+        quantityProduced: z.number(),
+        unit: z.string(),
+        expectedYield: z.number().optional(),
+        season: z.string().optional(),
+        notes: z.string().optional(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
-      const yieldPercentage = input.expectedYield
-        ? (input.quantityProduced / input.expectedYield) * 100
-        : 100;
+      try {
+        await createYield({
+          fieldId: input.fieldId,
+          userId: ctx.user.id,
+          cropName: input.cropName,
+          harvestDate: input.harvestDate,
+          quantityProduced: input.quantityProduced,
+          unit: input.unit,
+          expectedYield: input.expectedYield,
+          season: input.season,
+          notes: input.notes,
+        });
 
-      return {
-        id: Math.random(),
-        userId: ctx.user.id,
-        fieldId: input.fieldId,
-        cropName: input.cropName,
-        harvestDate: input.harvestDate,
-        quantityProduced: input.quantityProduced,
-        unit: input.unit,
-        expectedYield: input.expectedYield,
-        yieldPercentage,
-        notes: input.notes,
-      };
+        return { success: true, message: "Yield recorded successfully" };
+      } catch (error) {
+        console.error("Error recording yield:", error);
+        throw new Error("Failed to record yield");
+      }
     }),
 
-  // Get yield analytics for a field
+  /**
+   * Get yield analytics for a field
+   */
   getYieldAnalytics: protectedProcedure
     .input(z.object({ fieldId: z.number() }))
     .query(async ({ input }) => {
-      // Sample analytics structure
-      return {
-        averageYield: 5.2,
-        bestYield: 5.8,
-        worstYield: 4.5,
-        yieldTrend: "improving",
-        totalHarvests: 3,
-        topCrop: "Rice",
-        recommendations: [
-          "Maintain current fertilizer application rate",
-          "Consider increasing irrigation during grain filling",
-          "Monitor for pest outbreaks during monsoon",
-        ],
-      };
+      try {
+        return await getYieldAnalytics(input.fieldId);
+      } catch (error) {
+        console.error("Error fetching yield analytics:", error);
+        return {
+          averageYield: "0",
+          bestYield: "0",
+          totalHarvests: 0,
+          yieldTrend: "stable",
+        };
+      }
     }),
 
-  // Compare yields across seasons
-  compareSeasonalYields: protectedProcedure
-    .input(z.object({
-      fieldId: z.number(),
-      season: z.enum(["Kharif", "Rabi", "Zaid"]),
-    }))
+  /**
+   * Get all yields for the current user
+   */
+  getUserYields: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const records = await getUserYields(ctx.user.id);
+      return records.map((r) => ({
+        id: r.id,
+        fieldId: r.fieldId,
+        cropName: r.cropName,
+        harvestDate: r.harvestDate,
+        quantityProduced: parseFloat(r.quantityProduced),
+        unit: r.unit,
+        expectedYield: r.expectedYield ? parseFloat(r.expectedYield) : undefined,
+        yieldPercentage: r.yieldPercentage ? parseFloat(r.yieldPercentage) : undefined,
+        season: r.season,
+        notes: r.notes,
+      }));
+    } catch (error) {
+      console.error("Error fetching user yields:", error);
+      return [];
+    }
+  }),
+
+  /**
+   * Get seasonal yield summary for a field
+   */
+  getSeasonalSummary: protectedProcedure
+    .input(z.object({ fieldId: z.number(), season: z.string() }))
     .query(async ({ input }) => {
-      return {
-        season: input.season,
-        averageYield: 5.1,
-        cropCount: 2,
-        topCrop: "Rice",
-        totalProduction: 10.2,
-        unit: "ton/ha",
-      };
+      try {
+        const records = await getSeasonalYieldSummary(input.fieldId, input.season);
+        if (records.length === 0) {
+          return {
+            season: input.season,
+            totalRecords: 0,
+            averageYield: "0",
+            crops: [],
+          };
+        }
+
+        const quantities = records.map((r) => parseFloat(r.quantityProduced));
+        const averageYield = (quantities.reduce((a, b) => a + b, 0) / quantities.length).toFixed(2);
+        const crops = Array.from(new Set(records.map((r) => r.cropName)));
+
+        return {
+          season: input.season,
+          totalRecords: records.length,
+          averageYield,
+          crops,
+        };
+      } catch (error) {
+        console.error("Error fetching seasonal summary:", error);
+        return {
+          season: input.season,
+          totalRecords: 0,
+          averageYield: "0",
+          crops: [],
+        };
+      }
     }),
 });

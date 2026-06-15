@@ -7,6 +7,7 @@ import * as db from "./db";
 import { aezSoilData, fertilizerRecommendationData, cropSuitabilityMatrix, croppingPatterns, irrigationAdvisory, soilRechargingStrategies } from "./data/aezData";
 import { generateSoilExpertResponse } from "./llm-chat";
 import { yieldRouter } from "./yield";
+import { exportRouter } from "./export";
 
 export const appRouter = router({
   system: systemRouter,
@@ -267,6 +268,11 @@ export const appRouter = router({
    * Yield tracking procedures
    */
   yield: yieldRouter,
+
+  /**
+   * Export and reporting procedures
+   */
+  export: exportRouter,
 
   /**
    * Chat procedures

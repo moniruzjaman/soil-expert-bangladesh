@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
-import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube, TrendingUp } from "lucide-react";
+import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube, TrendingUp, Download } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -334,6 +334,19 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">Record harvest data and monitor productivity trends over time.</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/export">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Download className="w-8 h-8 text-indigo-600 mb-2" />
+                <CardTitle>Export & Reports</CardTitle>
+                <CardDescription>Download data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">Export field reports, activity records, and yield data as CSV/JSON.</p>
               </CardContent>
             </Card>
           </Link>

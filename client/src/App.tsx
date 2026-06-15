@@ -16,6 +16,7 @@ import Records from "./pages/Records";
 import SoilTest from "./pages/SoilTest";
 import Calendar from "./pages/Calendar";
 import Yield from "./pages/Yield";
+import Export from "./pages/Export";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -33,6 +34,7 @@ function Router() {
       <Route path={"/soil-test"} component={SoilTest} />
       <Route path={"/calendar"} component={Calendar} />
       <Route path={"/yield"} component={Yield} />
+      <Route path={"/export"} component={Export} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

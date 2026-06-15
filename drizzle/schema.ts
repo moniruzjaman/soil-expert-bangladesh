@@ -159,3 +159,25 @@ export const chatMessages = mysqlTable("chat_messages", {
 
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertChatMessage = typeof chatMessages.$inferInsert;
+
+/**
+ * Yield/harvest records for tracking productivity
+ */
+export const yields = mysqlTable("yields", {
+  id: int("id").autoincrement().primaryKey(),
+  fieldId: int("field_id").notNull(),
+  userId: int("user_id").notNull(),
+  cropName: varchar("crop_name", { length: 100 }).notNull(),
+  season: varchar("season", { length: 50 }),
+  harvestDate: timestamp("harvest_date"),
+  quantityProduced: varchar("quantity_produced", { length: 50 }).notNull(),
+  unit: varchar("unit", { length: 50 }).notNull(),
+  expectedYield: varchar("expected_yield", { length: 50 }),
+  yieldPercentage: varchar("yield_percentage", { length: 50 }),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Yield = typeof yields.$inferSelect;
+export type InsertYield = typeof yields.$inferInsert;
