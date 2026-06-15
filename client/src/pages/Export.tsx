@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
-import { Leaf, Download, FileText, BarChart3, Calendar } from "lucide-react";
+import { Leaf, Download, FileText, BarChart3, Calendar, Printer } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
 import { toast } from "sonner";
@@ -194,6 +194,28 @@ export default function Export() {
                     <Download className="w-4 h-4 mr-2" />
                     {reportQuery.isLoading ? "Loading..." : "Export as JSON"}
                   </Button>
+                </CardContent>
+              </Card>
+
+              {/* Print Report */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Printer className="w-5 h-5 text-red-600" />
+                    Print Report
+                  </CardTitle>
+                  <CardDescription>Printable field & seasonal reports</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Generate and print professional field reports with all your data and recommendations.
+                  </p>
+                  <Link href="/print-report">
+                    <Button className="w-full bg-red-600 hover:bg-red-700">
+                      <Printer className="w-4 h-4 mr-2" />
+                      Open Print Report
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
 
