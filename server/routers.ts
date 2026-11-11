@@ -8,6 +8,7 @@ import { aezSoilData, fertilizerRecommendationData, cropSuitabilityMatrix, cropp
 import { generateSoilExpertResponse } from "./llm-chat";
 import { yieldRouter } from "./yield";
 import { exportRouter } from "./export";
+import { parcelPersistenceFields } from "@shared/parcel";
 
 export const appRouter = router({
   system: systemRouter,
@@ -83,6 +84,16 @@ export const appRouter = router({
         fieldName: z.string(),
         latitude: z.string().optional(),
         longitude: z.string().optional(),
+        boundaryGeoJson: z.string().optional(),
+        locationAccuracyMeters: z.string().optional(),
+        address: z.string().optional(),
+        district: z.string().optional(),
+        upazila: z.string().optional(),
+        unionName: z.string().optional(),
+        mouzaName: z.string().optional(),
+        sheetNumber: z.string().optional(),
+        plotNumber: z.string().optional(),
+        cadastralStatus: z.string().optional(),
         aezCode: z.string().optional(),
         areaInBigha: z.string().optional(),
         soilTexture: z.string().optional(),
@@ -95,6 +106,7 @@ export const appRouter = router({
           fieldName: input.fieldName,
           latitude: input.latitude,
           longitude: input.longitude,
+          ...parcelPersistenceFields(input),
           aezCode: input.aezCode,
           areaInBigha: input.areaInBigha,
           soilTexture: input.soilTexture,

@@ -157,3 +157,11 @@
 - [ ] Final UI polish
 - [ ] Create checkpoint
 - [ ] Deploy to production
+
+## Parcel Mapping & Precise Location (2026-11-11)
+- [x] Inspect existing field, map, GPS, geocoding, and reverse-geocoding structures
+- [x] Add free parcel map UI with GPS capture, geofence boundary drawing, and reverse geocoding
+- [x] Persist parcel coordinates/boundary and location metadata to the field record
+- [x] Add honest mouza/plot-number lookup path with official cadastral-source status and fallback manual entry
+- [x] Add tests for coordinate validation, reverse-geocode handling, and parcel persistence
+- [x] Verify on mobile-sized UI, run typecheck/tests, and deploy
