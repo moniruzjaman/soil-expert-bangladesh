@@ -15,6 +15,7 @@ export default function Chat() {
   const [selectedField, setSelectedField] = useState<number | null>(null);
   const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; message: string }>>([]);
   const [inputValue, setInputValue] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fieldsQuery = trpc.fields.list.useQuery();
@@ -22,20 +23,6 @@ export default function Chat() {
     { fieldId: selectedField || undefined },
     { enabled: !!selectedField || !selectedField }
   );
-  const sendMessageMutation = trpc.chat.sendMessage.useMutation({
-    onSuccess: (data) => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "user", message: data.userMessage },
-        { role: "assistant", message: data.assistantMessage },
-      ]);
-      setInputValue("");
-    },
-    onError: (error) => {
-      toast.error("Failed to send message: " + error.message);
-    },
-  });
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -51,17 +38,49 @@ export default function Chat() {
     }
   }, [chatQuery.data]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputValue.trim()) {
       toast.error("Please enter a message");
       return;
     }
-
-    sendMessageMutation.mutate({
-      fieldId: selectedField || undefined,
-      language,
-      message: inputValue,
-    });
+    const question = inputValue.trim();
+    setInputValue("");
+    setIsStreaming(true);
+    setMessages((prev) => [...prev, { role: "user", message: question }, { role: "assistant", message: "" }]);
+    try {
+      const response = await fetch("/api/chat/stream", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ fieldId: selectedField || undefined, language, message: question }),
+      });
+      if (!response.ok || !response.body) throw new Error("Streaming chat request failed");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { value, done } = await reader.read();
+        buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+        for (const line of lines) {
+          if (!line.startsWith("data:")) continue;
+          const payload = line.slice(5).trim();
+          if (!payload) continue;
+          const event = JSON.parse(payload) as { type: string; token?: string; message?: string };
+          if (event.type === "token" && event.token) {
+            setMessages((prev) => prev.map((item, index) => index === prev.length - 1 ? { ...item, message: item.message + event.token } : item));
+          }
+          if (event.type === "error") throw new Error(event.message || "AI response failed");
+        }
+        if (done) break;
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to stream AI response");
+      setMessages((prev) => prev.map((item, index) => index === prev.length - 1 ? { ...item, message: "Please try again later." } : item));
+    } finally {
+      setIsStreaming(false);
+    }
   };
 
   const suggestedQuestions = {
@@ -180,14 +199,14 @@ export default function Chat() {
                         handleSendMessage();
                       }
                     }}
-                    disabled={sendMessageMutation.isPending}
+                    disabled={isStreaming}
                   />
                   <Button
                     onClick={handleSendMessage}
-                    disabled={sendMessageMutation.isPending || !inputValue.trim()}
+                    disabled={isStreaming || !inputValue.trim()}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    {sendMessageMutation.isPending ? (
+                    {isStreaming ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       <Send className="w-4 h-4" />

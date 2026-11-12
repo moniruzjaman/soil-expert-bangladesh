@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildSoilExpertMessages } from "./llm-chat";
+import { parseSseToken } from "./_core/llm";
 
 describe("soil expert chat contract", () => {
   it("builds English prompts with complete field context", () => {
@@ -13,5 +14,11 @@ describe("soil expert chat contract", () => {
     const result = buildSoilExpertMessages("ধানের জন্য কী করব?", "bn");
     expect(result.systemPrompt).toContain("বাংলাদেশের চাষাবাদ");
     expect(result.userMessageWithContext).toContain("ধানের জন্য");
+  });
+
+  it("parses streaming token frames safely", () => {
+    expect(parseSseToken('{"choices":[{"delta":{"content":"ধান"}}]}')).toBe("ধান");
+    expect(parseSseToken("[DONE]")).toBeUndefined();
+    expect(parseSseToken("not-json")).toBeUndefined();
   });
 });

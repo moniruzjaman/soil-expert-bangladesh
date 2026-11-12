@@ -1,4 +1,4 @@
-import { invokeLLM } from "./_core/llm";
+import { invokeLLM, streamLLM } from "./_core/llm";
 
 const SOIL_EXPERT_SYSTEM_PROMPT_EN = `You are Precision Khamari, a professional soil and agriculture expert specializing in Bangladesh farming. You have deep knowledge of:
 
@@ -64,4 +64,19 @@ export async function generateSoilExpertResponse(
     console.error("LLM Error:", error);
     throw new Error("Failed to generate AI response. Please try again later.");
   }
+}
+
+export async function streamSoilExpertResponse(
+  userMessage: string,
+  language: "en" | "bn",
+  contextData: Parameters<typeof buildSoilExpertMessages>[2],
+  onToken: (token: string) => void,
+) {
+  const { systemPrompt, userMessageWithContext } = buildSoilExpertMessages(userMessage, language, contextData);
+  return streamLLM({
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userMessageWithContext },
+    ],
+  }, onToken);
 }

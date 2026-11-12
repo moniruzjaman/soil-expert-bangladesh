@@ -125,6 +125,13 @@ export async function getFieldById(fieldId: number) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+export async function getUserFieldById(userId: number, fieldId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(fields).where(and(eq(fields.id, fieldId), eq(fields.userId, userId))).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
 export async function createField(fieldData: typeof fields.$inferInsert) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");

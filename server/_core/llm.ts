@@ -420,6 +420,69 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   return (await response.json()) as InvokeResult;
 }
 
+export function parseSseToken(data: string) {
+  if (!data || data === "[DONE]") return undefined;
+  try {
+    const parsed = JSON.parse(data) as { choices?: Array<{ delta?: { content?: string } }> };
+    return parsed.choices?.[0]?.delta?.content;
+  } catch {
+    return undefined;
+  }
+}
+
+export async function streamLLM(
+  params: InvokeParams,
+  onToken: (token: string) => void,
+): Promise<string> {
+  assertApiKey();
+  const payload: Record<string, unknown> = {
+    messages: params.messages.map(normalizeMessage),
+    stream: true,
+  };
+  if (params.model) payload.model = params.model;
+  const resolvedMaxTokens = params.max_tokens ?? params.maxTokens;
+  if (typeof resolvedMaxTokens === "number") payload.max_tokens = resolvedMaxTokens;
+  if (params.thinking) payload.thinking = params.thinking;
+  if (params.reasoning) payload.reasoning = params.reasoning;
+
+  const response = await fetchWithBackoff(resolveApiUrl(), {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${ENV.forgeApiKey}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    throw new Error(`LLM stream failed: ${response.status} ${response.statusText} – ${await response.text()}`);
+  }
+  if (!response.body) throw new Error("LLM stream returned no response body");
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let fullText = "";
+  const consumeLine = (line: string) => {
+    if (!line.startsWith("data:")) return;
+    const token = parseSseToken(line.slice(5).trim());
+    if (token) {
+      fullText += token;
+      onToken(token);
+    }
+  };
+
+  while (true) {
+    const { value, done } = await reader.read();
+    buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() || "";
+    lines.forEach(line => consumeLine(line.replace(/\r$/, "")));
+    if (done) break;
+  }
+  if (buffer) consumeLine(buffer);
+  return fullText;
+}
+
 export type ModelInfo = {
   id: string;
   object: string;

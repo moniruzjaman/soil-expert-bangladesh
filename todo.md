@@ -89,7 +89,7 @@
 - [x] Create system prompt with Bangladesh soil science expertise
 - [x] Build context awareness (user's field data, location, AEZ)
 - [x] Implement fertilizer recommendation context in chat
-- [ ] Add streaming response support (requires SSE support in the current invokeLLM wrapper)
+- [x] Add streaming response support (protected SSE endpoint with token-by-token client rendering)
 - [x] Create chat history persistence
 - [x] Build quick action buttons for common queries
 
