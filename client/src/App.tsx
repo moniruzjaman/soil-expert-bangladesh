@@ -1,29 +1,34 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
+import { lazy, Suspense } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import Fields from "./pages/Fields";
-import SoilAssessment from "./pages/SoilAssessment";
-import Fertilizer from "./pages/Fertilizer";
-import Irrigation from "./pages/Irrigation";
-import Chat from "./pages/Chat";
-import Crops from "./pages/Crops";
-import Knowledge from "./pages/Knowledge";
-import Records from "./pages/Records";
-import SoilTest from "./pages/SoilTest";
-import Calendar from "./pages/Calendar";
-import Yield from "./pages/Yield";
-import Export from "./pages/Export";
-import PrintReport from "./pages/PrintReport";
-import Efficiency from "./pages/Efficiency";
-import About from "./pages/About";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+const Home = lazy(() => import("./pages/Home"));
+const Fields = lazy(() => import("./pages/Fields"));
+const SoilAssessment = lazy(() => import("./pages/SoilAssessment"));
+const Fertilizer = lazy(() => import("./pages/Fertilizer"));
+const Irrigation = lazy(() => import("./pages/Irrigation"));
+const Chat = lazy(() => import("./pages/Chat"));
+const Crops = lazy(() => import("./pages/Crops"));
+const Knowledge = lazy(() => import("./pages/Knowledge"));
+const Records = lazy(() => import("./pages/Records"));
+const SoilTest = lazy(() => import("./pages/SoilTest"));
+const Calendar = lazy(() => import("./pages/Calendar"));
+const Yield = lazy(() => import("./pages/Yield"));
+const Export = lazy(() => import("./pages/Export"));
+const PrintReport = lazy(() => import("./pages/PrintReport"));
+const Efficiency = lazy(() => import("./pages/Efficiency"));
+const About = lazy(() => import("./pages/About"));
+const Help = lazy(() => import("./pages/Help"));
+import { Moon, Sun } from "lucide-react";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-background text-foreground"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-green-600" /></div>}>
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/fields"} component={Fields} />
@@ -41,10 +46,12 @@ function Router() {
       <Route path={"/print-report"} component={PrintReport} />
       <Route path={"/efficiency"} component={Efficiency} />
       <Route path={"/about"} component={About} />
+      <Route path={"/help"} component={Help} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
+    </Suspense>
   );
 }
 
@@ -58,14 +65,32 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider
         defaultTheme="light"
-        // switchable
+        switchable
       >
         <TooltipProvider>
           <Toaster />
+          <ThemeToggle />
           <Router />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="icon"
+      aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      title={theme === "dark" ? "Light theme" : "Dark theme"}
+      onClick={() => toggleTheme?.()}
+      className="fixed bottom-4 right-4 z-[60] rounded-full bg-background/90 shadow-lg backdrop-blur"
+    >
+      {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+    </Button>
   );
 }
 

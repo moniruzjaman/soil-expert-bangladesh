@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Sitemap: https://soilappbd-6q9y4u78.manus.space/sitemap.xml

@@ -81,7 +81,7 @@ export const appRouter = router({
 
     create: protectedProcedure
       .input(z.object({
-        fieldName: z.string(),
+        fieldName: z.string().trim().min(1).max(120),
         latitude: z.string().optional(),
         longitude: z.string().optional(),
         boundaryGeoJson: z.string().optional(),
@@ -98,7 +98,7 @@ export const appRouter = router({
         areaInBigha: z.string().optional(),
         soilTexture: z.string().optional(),
         landType: z.string().optional(),
-        notes: z.string().optional(),
+        notes: z.string().max(2000).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         return await db.createField({
@@ -300,7 +300,7 @@ export const appRouter = router({
       .input(z.object({
         fieldId: z.number().optional(),
         language: z.enum(["en", "bn"]).default("en"),
-        message: z.string(),
+        message: z.string().trim().min(1).max(4000),
       }))
       .mutation(async ({ ctx, input }) => {
         // Save user message
@@ -313,7 +313,7 @@ export const appRouter = router({
         });
 
         // Get field context if provided
-        let fieldContext: { fieldName?: string; aezCode?: string; soilTexture?: string } | undefined = undefined;
+        let fieldContext: { fieldName?: string; aezCode?: string; soilTexture?: string; soilPH?: string; organicMatter?: string } | undefined = undefined;
         if (input.fieldId) {
           const field = await db.getFieldById(input.fieldId);
           if (field) {
@@ -321,6 +321,8 @@ export const appRouter = router({
               fieldName: field.fieldName || undefined,
               aezCode: field.aezCode || undefined,
               soilTexture: field.soilTexture || undefined,
+              soilPH: field.soilPH || undefined,
+              organicMatter: field.organicMatter || undefined,
             };
           }
         }

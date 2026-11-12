@@ -22,6 +22,20 @@ const SOIL_EXPERT_SYSTEM_PROMPT_BN = `আপনি প্রিসিশন খ�
 
 সর্বদা বাংলাদেশের চাষাবাদের অবস্থার জন্য উপযুক্ত ব্যবহারিক, কার্যকর পরামর্শ প্রদান করুন। প্রাসঙ্গিক হলে FRG 2024 সুপারিশ উল্লেখ করুন। টেকসই অনুশীলনকে উৎসাহিত করুন এবং সহায়ক হন।`;
 
+export function buildSoilExpertMessages(userMessage: string, language: "en" | "bn", contextData?: { fieldName?: string; aezCode?: string; soilTexture?: string; soilPH?: string; organicMatter?: string }) {
+  const systemPrompt = language === "en" ? SOIL_EXPERT_SYSTEM_PROMPT_EN : SOIL_EXPERT_SYSTEM_PROMPT_BN;
+  let contextString = "";
+  if (contextData) {
+    contextString = `\n\nUser's Field Context:\n`;
+    if (contextData.fieldName) contextString += `- Field: ${contextData.fieldName}\n`;
+    if (contextData.aezCode) contextString += `- AEZ: ${contextData.aezCode}\n`;
+    if (contextData.soilTexture) contextString += `- Soil Texture: ${contextData.soilTexture}\n`;
+    if (contextData.soilPH) contextString += `- Soil pH: ${contextData.soilPH}\n`;
+    if (contextData.organicMatter) contextString += `- Organic Matter: ${contextData.organicMatter}%\n`;
+  }
+  return { systemPrompt, userMessageWithContext: userMessage + contextString };
+}
+
 export async function generateSoilExpertResponse(
   userMessage: string,
   language: "en" | "bn",
@@ -33,19 +47,7 @@ export async function generateSoilExpertResponse(
     organicMatter?: string;
   }
 ) {
-  const systemPrompt = language === "en" ? SOIL_EXPERT_SYSTEM_PROMPT_EN : SOIL_EXPERT_SYSTEM_PROMPT_BN;
-
-  let contextString = "";
-  if (contextData) {
-    contextString = `\n\nUser's Field Context:\n`;
-    if (contextData.fieldName) contextString += `- Field: ${contextData.fieldName}\n`;
-    if (contextData.aezCode) contextString += `- AEZ: ${contextData.aezCode}\n`;
-    if (contextData.soilTexture) contextString += `- Soil Texture: ${contextData.soilTexture}\n`;
-    if (contextData.soilPH) contextString += `- Soil pH: ${contextData.soilPH}\n`;
-    if (contextData.organicMatter) contextString += `- Organic Matter: ${contextData.organicMatter}%\n`;
-  }
-
-  const userMessageWithContext = userMessage + contextString;
+  const { systemPrompt, userMessageWithContext } = buildSoilExpertMessages(userMessage, language, contextData);
 
   try {
     const response = await invokeLLM({

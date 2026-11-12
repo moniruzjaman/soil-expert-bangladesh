@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
-import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube, TrendingUp, Download, Zap } from "lucide-react";
+import { Leaf, Droplets, Beaker, BookOpen, MessageSquare, BarChart3, BookMarked, Calendar as CalendarIcon, TestTube, TrendingUp, Download, Zap, CircleHelp } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -360,6 +360,19 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">Track input costs, yields, and profitability metrics to optimize farm operations.</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/help">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CircleHelp className="w-8 h-8 text-green-600 mb-2" />
+                <CardTitle>Farmer Help Center</CardTitle>
+                <CardDescription>Guide, FAQ & glossary</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">Learn the app step by step and find practical Bangladesh farming answers.</p>
               </CardContent>
             </Card>
           </Link>

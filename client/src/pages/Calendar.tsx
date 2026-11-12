@@ -1,7 +1,8 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Calendar as CalendarIcon, AlertCircle, Droplets, Sprout } from "lucide-react";
+import { Leaf, Calendar as CalendarIcon, AlertCircle, Droplets, Sprout, CloudRain, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "wouter";
 
 const bangladeshCalendar = [
@@ -103,6 +104,28 @@ const bangladeshCalendar = [
   },
 ];
 
+const weatherNotes = [
+  "Cool and dry Rabi weather: irrigate winter crops at critical stages and watch for fog-related disease.",
+  "Dry-season conditions are common: conserve irrigation water and protect seedlings from heat and wind.",
+  "Pre-monsoon heat can stress crops: mulch, irrigate early, and prepare drainage before storms.",
+  "Pre-monsoon showers may be uneven: keep seedbeds moist but avoid standing water around young roots.",
+  "Early monsoon weather is variable: use drainage channels and delay fertilizer before heavy rain.",
+  "Monsoon rainfall is active: scout after rain, repair bunds, and avoid spraying before a storm.",
+  "Wet conditions continue: use AWD only when safe for rice and keep field outlets clear.",
+  "High humidity favors disease: improve airflow in vegetables and inspect rice for pests after rain.",
+  "Rain may be intermittent: monitor soil moisture instead of following a fixed irrigation calendar.",
+  "Late monsoon transition: plan drainage and prepare Rabi seedbeds as fields become workable.",
+  "Cooler dry weather begins: irrigate Rabi crops at critical stages and scout for aphids and rust.",
+  "Dry Rabi conditions: conserve soil moisture, keep weeds managed, and avoid over-irrigation.",
+];
+
+const checklistItems = [
+  "Inspect crop stand and unusual symptoms",
+  "Check soil moisture before irrigation",
+  "Review fertilizer timing and record inputs",
+  "Clear field drains and repair bunds",
+];
+
 export default function Calendar() {
   const { user } = useAuth();
   const currentMonth = new Date().getMonth();
@@ -189,6 +212,8 @@ export default function Calendar() {
             </CardContent>
           </Card>
         )}
+
+        <AdvisoryPanel monthIndex={currentMonth} monthData={currentMonthData} />
 
         {/* Full Year Calendar */}
         <div className="mb-8">
@@ -278,6 +303,20 @@ export default function Calendar() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function AdvisoryPanel({ monthIndex, monthData }: { monthIndex: number; monthData: (typeof bangladeshCalendar)[number] }) {
+  const [completed, setCompleted] = useState<boolean[]>(() => checklistItems.map(() => false));
+  const nextMonth = bangladeshCalendar[(monthIndex + 1) % bangladeshCalendar.length];
+  return (
+    <div className="mb-8 grid gap-6 lg:grid-cols-3">
+      <Card className="border-amber-200 bg-amber-50 lg:col-span-2">
+        <CardHeader><CardTitle className="flex items-center gap-2 text-amber-950"><AlertCircle className="h-5 w-5" />Advisory alerts & upcoming tasks</CardTitle><CardDescription className="text-amber-900">Based on the Bangladesh seasonal calendar. Confirm local rainfall before acting.</CardDescription></CardHeader>
+        <CardContent className="space-y-3 text-sm text-amber-950"><p><strong>This month:</strong> {monthData.activities.join("; ")}.</p><p><strong>Next month:</strong> Prepare for {nextMonth.crops.slice(0, 3).join(", ")} and review {nextMonth.activities[0].toLowerCase()}.</p><p className="flex items-start gap-2"><CloudRain className="mt-0.5 h-4 w-4 shrink-0" /><span><strong>Weather note:</strong> {weatherNotes[monthIndex]}</span></p><p className="text-xs text-amber-800">This is a seasonal planning signal, not a live weather forecast. Do not spray or irrigate solely from this message.</p></CardContent>
+      </Card>
+      <Card><CardHeader><CardTitle>Farm checklist</CardTitle><CardDescription>Tick off this month’s routine checks.</CardDescription></CardHeader><CardContent className="space-y-3">{checklistItems.map((item, index) => <button type="button" key={item} className="flex w-full items-start gap-3 text-left text-sm" onClick={() => setCompleted(values => values.map((value, itemIndex) => itemIndex === index ? !value : value))}><CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${completed[index] ? "text-green-600" : "text-gray-300"}`} /><span className={completed[index] ? "text-gray-400 line-through" : "text-gray-700"}>{item}</span></button>)}</CardContent></Card>
     </div>
   );
 }

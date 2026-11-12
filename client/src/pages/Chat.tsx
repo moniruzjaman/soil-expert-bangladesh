@@ -155,12 +155,12 @@ export default function Chat() {
               <div className="border-t p-4 space-y-4">
                 <div>
                   <label className="text-sm text-gray-600 mb-2 block">Select Field (Optional)</label>
-                  <Select value={selectedField?.toString() || ""} onValueChange={(v) => setSelectedField(v ? parseInt(v) : null)}>
+                  <Select value={selectedField?.toString() || "none"} onValueChange={(v) => setSelectedField(v === "none" ? null : parseInt(v))}>
                     <SelectTrigger>
                       <SelectValue placeholder="Choose a field for context" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No field selected</SelectItem>
+                      <SelectItem value="none">No field selected</SelectItem>
                       {fieldsQuery.data?.map((field) => (
                         <SelectItem key={field.id} value={field.id.toString()}>
                           {field.fieldName}

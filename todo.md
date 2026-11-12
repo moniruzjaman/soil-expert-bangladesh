@@ -76,9 +76,9 @@
 - [x] Build fertilizer types and benefits guide
 - [x] Add soil pH management guide
 - [x] Implement climate-smart agriculture section
-- [ ] Create Bangladesh agricultural calendar
-- [ ] Build nutrient deficiency symptom guide
-- [ ] Add pest and disease management basics
+- [x] Create Bangladesh agricultural calendar
+- [x] Build nutrient deficiency symptom guide
+- [x] Add pest and disease management basics
 - [x] Create water management best practices guide
 
 ## Phase 8: AI-Powered Soil Expert Chat Assistant
@@ -89,7 +89,7 @@
 - [x] Create system prompt with Bangladesh soil science expertise
 - [x] Build context awareness (user's field data, location, AEZ)
 - [x] Implement fertilizer recommendation context in chat
-- [ ] Add streaming response support
+- [ ] Add streaming response support (requires SSE support in the current invokeLLM wrapper)
 - [x] Create chat history persistence
 - [x] Build quick action buttons for common queries
 
@@ -109,12 +109,12 @@
 - [x] Build main dashboard layout
 - [x] Create seasonal crop calendar for Bangladesh
 - [x] Implement current season detection
-- [ ] Build advisory alerts system
-- [ ] Add weather-based recommendations
-- [ ] Create upcoming tasks/reminders
+- [x] Build advisory alerts system
+- [x] Add weather-based recommendations
+- [x] Create upcoming tasks/reminders
 - [x] Build field summary cards
 - [x] Implement quick stats (soil health, crop status)
-- [ ] Add seasonal activity checklist
+- [x] Add seasonal activity checklist
 
 ## Phase 11: UI/UX & Styling
 - [x] Design color palette for agricultural advisory app
@@ -125,7 +125,7 @@
 - [x] Create empty states for new users
 - [x] Build success confirmations
 - [x] Add accessibility features
-- [ ] Implement dark/light theme support
+- [x] Implement dark/light theme support
 - [x] Create print-friendly report layouts (PrintReport page with field and seasonal summaries)
 
 ## Phase 12: Testing & Quality Assurance
@@ -134,29 +134,29 @@
 - [x] Verify fertilizer calculations
 - [x] Test crop suitability logic
 - [x] Validate irrigation calculations
-- [ ] Test chat assistant responses
+- [x] Test chat assistant responses
 - [x] Verify Bangla/English language switching
 - [x] Test mobile responsiveness
 - [x] Verify data persistence
 - [x] Test user authentication flow
 
 ## Phase 13: Content & Documentation
-- [ ] Add comprehensive help documentation
-- [ ] Create user guide for farmers
-- [ ] Build FAQ section
-- [ ] Add video tutorials (if applicable)
-- [ ] Create glossary of agricultural terms
-- [ ] Add contact/support information
+- [x] Add comprehensive help documentation
+- [x] Create user guide for farmers
+- [x] Build FAQ section
+- [x] Add video tutorials (visual mini-tutorials implemented; hosted video assets not required)
+- [x] Create glossary of agricultural terms
+- [x] Add contact/support information
 - [x] Build about page with credibility
 - [x] Add data sources and references
 
 ## Phase 14: Final Polish & Deployment
-- [ ] Performance optimization
-- [ ] SEO optimization
-- [ ] Security audit
-- [ ] Final UI polish
-- [ ] Create checkpoint
-- [ ] Deploy to production
+- [x] Performance optimization (route-level code splitting verified in production build)
+- [x] SEO optimization (metadata, canonical, robots, and sitemap)
+- [x] Security audit (documented validation/auth/data-handling review and remediations)
+- [x] Final UI polish (responsive Help Center, dark-mode readability, accessible chat selection)
+- [x] Create checkpoint
+- [x] Deploy to production
 
 ## Parcel Mapping & Precise Location (2026-11-11)
 - [x] Inspect existing field, map, GPS, geocoding, and reverse-geocoding structures

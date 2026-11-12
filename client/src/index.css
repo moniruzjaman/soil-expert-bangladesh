@@ -134,6 +134,14 @@
 }
 
 @layer components {
+  .dark .bg-gray-50 { background-color: oklch(0.16 0.006 285.823) !important; }
+  .dark .bg-white { background-color: oklch(0.21 0.006 285.885) !important; }
+  .dark .text-gray-900 { color: oklch(0.95 0.005 65) !important; }
+  .dark .text-gray-700 { color: oklch(0.82 0.005 65) !important; }
+  .dark .text-gray-600 { color: oklch(0.72 0.01 65) !important; }
+  .dark .text-gray-500 { color: oklch(0.65 0.01 65) !important; }
+  .dark .border-gray-200 { border-color: oklch(1 0 0 / 15%) !important; }
+
   /**
    * Custom container utility that centers content and adds responsive padding.
    *
